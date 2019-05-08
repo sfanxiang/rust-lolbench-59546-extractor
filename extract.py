@@ -31,38 +31,38 @@ for commit in os.listdir('output'):
 
 commits = [base_commit] + [commit for commit in table.keys() if commit != base_commit]
 
-output = '|Benchmark|'
+output = '| Benchmark |'
 for commit in commits:
-    output += commit + '|'
+    output += ' %s |' % commit[:6]
     if commit != base_commit:
-        output += '+%|'
-output += '\n|---|'
+        output += ' +% |'
+output += '\n| --- |'
 for commit in commits:
-    output += '---|'
+    output += ' --- |'
     if commit != base_commit:
-        output += '---|'
+        output += ' --- |'
 
 incr = {}
 for commit in commits:
     if commit != base_commit:
         incr[commit] = []
 
-for bench in sorted(table[commits[0]].keys()):
-    output += '\n|%s|' % bench
+for (bench, _), _ in sorted(zip(table[commits[0]].items(), table[commits[-1]].items()), key=lambda v: v[1][1] / v[0][1]):
+    output += '\n| `%s` |' % bench
     for commit in commits:
-        output += '%s|' % table[commit][bench]
+        output += ' %s |' % table[commit][bench]
         if commit != base_commit:
             incr_cur = (table[commit][bench] / table[base_commit][bench] - 1.0) * 100.0
-            output += '%s%%|' % ('{0:+}'.format(incr_cur))
+            output += ' %s%% |' % ('{0:+}'.format(incr_cur))
             incr[commit] += [incr_cur]
-output += '\n|Mean %|'
+output += '\n| Mean % |'
 
 for commit in commits:
     if commit != base_commit:
         v = (sum(incr[commit]) / float(len(incr[commit])))
-        output += '|%s%%|' % ('{0:+}'.format(v))
+        output += ' | %s%% |' % ('{0:+}'.format(v))
     else:
-        output += '|'
+        output += ' |'
 output += '\n'
 
 print(output)
