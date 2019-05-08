@@ -33,7 +33,7 @@ commits = [base_commit] + [commit for commit in table.keys() if commit != base_c
 
 output = '| Benchmark |'
 for commit in commits:
-    output += ' %s |' % commit[:6]
+    output += ' %s |' % commit[:7]
     if commit != base_commit:
         output += ' +% |'
 output += '\n| --- |'
@@ -50,17 +50,17 @@ for commit in commits:
 for (bench, _), _ in sorted(zip(table[commits[0]].items(), table[commits[-1]].items()), key=lambda v: v[1][1] / v[0][1]):
     output += '\n| `%s` |' % bench
     for commit in commits:
-        output += ' %s |' % table[commit][bench]
+        output += ' %.5f |' % table[commit][bench]
         if commit != base_commit:
             incr_cur = (table[commit][bench] / table[base_commit][bench] - 1.0) * 100.0
-            output += ' %s%% |' % ('{0:+}'.format(incr_cur))
+            output += ' %s%% |' % ('{0:+.5f}'.format(incr_cur))
             incr[commit] += [incr_cur]
-output += '\n| Mean % |'
+output += '\n| Mean +% |'
 
 for commit in commits:
     if commit != base_commit:
         v = (sum(incr[commit]) / float(len(incr[commit])))
-        output += ' | %s%% |' % ('{0:+}'.format(v))
+        output += ' | %s%% |' % ('{0:+.5f}'.format(v))
     else:
         output += ' |'
 output += '\n'
