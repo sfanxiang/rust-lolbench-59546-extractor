@@ -33,7 +33,7 @@ commits = [base_commit] + [commit for commit in table.keys() if commit != base_c
 
 output = '| Benchmark |'
 for commit in commits:
-    output += ' %s |' % commit[:7]
+    output += ' %s |' % commit
     if commit != base_commit:
         output += ' +% |'
 output += '\n| --- |'
